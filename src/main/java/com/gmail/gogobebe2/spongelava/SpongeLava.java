@@ -3,6 +3,7 @@ package com.gmail.gogobebe2.spongelava;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,17 +21,29 @@ public class SpongeLava extends JavaPlugin implements Listener {
         getLogger().info("Disabling SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
     }
 
+    private boolean isTouchingLava(Block block) {
+        for (BlockFace face : new BlockFace[]{BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH,
+                BlockFace.EAST, BlockFace.WEST}) {
+            Block relative = block.getRelative(face);
+            if (relative.getType().equals(Material.LAVA) || relative.getType().equals(Material.STATIONARY_LAVA)) {
+                return true;
+            }
+        }
+        return false;
+    }
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSpongePlace(BlockPlaceEvent event) {
         if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
             Block sponge = event.getBlockPlaced();
-            for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
-                for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
-                    for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
-                        Block block = sponge.getLocation().getWorld().getBlockAt(x, y, z);
-                        if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))
-                        {
-                            block.setType(Material.AIR);
+            if (isTouchingLava(sponge)) {
+                for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
+                    for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
+                        for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
+                            Block block = sponge.getWorld().getBlockAt(x, y, z);
+                            if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))
+                            {
+                                block.setType(Material.AIR);
+                            }
                         }
                     }
                 }
