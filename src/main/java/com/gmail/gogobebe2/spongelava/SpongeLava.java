@@ -16,6 +16,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         getLogger().info("Starting up SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
         Bukkit.getPluginManager().registerEvents(this, this);
     }
+
     @Override
     public void onDisable() {
         getLogger().info("Disabling SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
@@ -31,6 +32,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         }
         return false;
     }
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSpongePlace(BlockPlaceEvent event) {
         if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
@@ -40,9 +42,8 @@ public class SpongeLava extends JavaPlugin implements Listener {
                     for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
                         for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
                             Block block = sponge.getWorld().getBlockAt(x, y, z);
-                            if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))
-                            {
-                                block.setType(Material.AIR);
+                            if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA)) {
+                                block.breakNaturally();
                             }
                         }
                     }
