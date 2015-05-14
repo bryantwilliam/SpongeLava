@@ -1,5 +1,5 @@
 name: SpongeLava
-version: 1.0.3-DEVELOPMENT-SNAPSHOT
+version: 1.0.4-DEVELOPMENT-SNAPSHOT
 main: com.gmail.gogobebe2.spongelava.SpongeLava
 description: Makes sponges act the same way with lava as it does with water.
 author: William Bryant (gogobebe2)

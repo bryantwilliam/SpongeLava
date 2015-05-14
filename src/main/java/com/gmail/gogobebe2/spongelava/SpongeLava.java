@@ -26,7 +26,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
             Block sponge = event.getBlockPlaced();
             for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
                 for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
-                    for (int z = sponge.getZ() - 7; y < sponge.getZ() + 7; y++) {
+                    for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
                         Block block = sponge.getLocation().getWorld().getBlockAt(x, y, z);
                         if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))
                         {
