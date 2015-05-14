@@ -30,7 +30,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
                         Block block = sponge.getLocation().getWorld().getBlockAt(x, y, z);
                         if (block.getType().equals(Material.LAVA) || block.getType().equals(Material.STATIONARY_LAVA))
                         {
-                            block.breakNaturally();
+                            block.setType(Material.AIR);
                         }
                     }
                 }
