@@ -1,5 +1,6 @@
 package com.gmail.gogobebe2.spongelava;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpongeLava extends JavaPlugin implements Listener {
+    @Override
+    public void onEnable() {
+        getLogger().info("Starting up SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
+        Bukkit.getPluginManager().registerEvents(this, this);
+    }
+    @Override
+    public void onDisable() {
+        getLogger().info("Disabling SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
+    }
+
     @EventHandler(priority = EventPriority.NORMAL)
     public void onSpongePlace(BlockPlaceEvent event) {
         if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
