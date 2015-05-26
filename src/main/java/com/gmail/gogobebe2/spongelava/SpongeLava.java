@@ -25,10 +25,8 @@ public class SpongeLava extends JavaPlugin implements Listener {
             public void run() {
                 if (getConfig().isSet("SPONGES")) {
                     Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                    if (!spongeIDs.isEmpty()) {
-                        for (String id : spongeIDs) {
-                            clearSurroundingLava(loadSponge(Integer.parseInt(id)));
-                        }
+                    for (String id : spongeIDs) {
+                        clearSurroundingLava(loadSponge(Integer.parseInt(id)));
                     }
                 }
             }
@@ -98,7 +96,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         int Y = sponge.getY();
         int Z = sponge.getZ();
         int ID = getNextID();
-        getConfig().set("SPONGES." + ID + ".WORLD", WORLD);
+        getConfig().set("SPONGES." + ID + ".WORLD", WORLD.getName());
         getConfig().set("SPONGES." + ID + ".X", X);
         getConfig().set("SPONGES." + ID + ".Y", Y);
         getConfig().set("SPONGES." + ID + ".Z", Z);
