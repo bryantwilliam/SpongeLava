@@ -99,6 +99,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         getConfig().set("SPONGES." + ID + ".X", X);
         getConfig().set("SPONGES." + ID + ".Y", Y);
         getConfig().set("SPONGES." + ID + ".Z", Z);
+        saveConfig();
     }
 
     private Block loadSponge(int ID) {
@@ -118,6 +119,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
                 for (String id : getConfig().getConfigurationSection("SPONGES").getKeys(false)) {
                     if (loadSponge(Integer.parseInt(id)).equals(block)) {
                         getConfig().set("SPONGES." + id, null);
+                        saveConfig();
                         return;
                     }
                 }
