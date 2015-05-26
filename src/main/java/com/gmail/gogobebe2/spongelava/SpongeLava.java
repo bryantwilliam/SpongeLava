@@ -30,7 +30,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
                     }
                 }
             }
-        }, 0L, 5L);
+        }, 0L, 1L);
         saveDefaultConfig();
     }
 
