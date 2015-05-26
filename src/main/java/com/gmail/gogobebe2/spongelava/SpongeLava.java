@@ -54,13 +54,12 @@ public class SpongeLava extends JavaPlugin implements Listener {
     }
 
     private void clearSurroundingLava(Block sponge) {
-        if (isTouchingLava(sponge)) {
+        if (!getConfig().getBoolean("Needs to touch lava to clear") || isTouchingLava(sponge)) {
             for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
                 for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
                     for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
                         Block block = sponge.getWorld().getBlockAt(x, y, z);
-                        if (!getConfig().getBoolean("Needs to touch lava to clear")
-                                || (block.getType().equals(Material.LAVA)
+                        if ((block.getType().equals(Material.LAVA)
                                 || block.getType().equals(Material.STATIONARY_LAVA))) {
                             block.breakNaturally();
                         }
