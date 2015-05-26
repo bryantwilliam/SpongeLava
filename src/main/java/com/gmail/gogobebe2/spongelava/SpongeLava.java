@@ -136,7 +136,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         if (block.getType().equals(Material.SPONGE)) {
             if (getConfig().isSet("SPONGES")) {
                 Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                for (String id : getConfig().getConfigurationSection("SPONGES").getKeys(false)) {
+                for (String id : spongeIDs) {
                     if (loadSponge(Integer.parseInt(id)).equals(block)) {
                         getConfig().set("SPONGES." + id, null);
                         saveConfig();
