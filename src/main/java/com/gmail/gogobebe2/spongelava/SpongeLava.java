@@ -23,12 +23,10 @@ public class SpongeLava extends JavaPlugin implements Listener {
         int timerIncrementer = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                if (getConfig().isSet("SPONGES")) {
-                    Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                    if (!spongeIDs.isEmpty()) {
-                        for (String id : spongeIDs) {
-                            clearSurroundingWater(loadSponge(Integer.parseInt(id)));
-                        }
+                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
+                if (!spongeIDs.isEmpty()) {
+                    for (String id : spongeIDs) {
+                        clearSurroundingWater(loadSponge(Integer.parseInt(id)));
                     }
                 }
             }
@@ -115,10 +113,13 @@ public class SpongeLava extends JavaPlugin implements Listener {
     public void onSpongeBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (block.getType().equals(Material.SPONGE)) {
-            for (String id : getConfig().getConfigurationSection("SPONGES").getKeys(false)) {
-                if (loadSponge(Integer.parseInt(id)).equals(block)) {
-                    getConfig().set("SPONGES." + id, null);
-                    return;
+            Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
+            if (!spongeIDs.isEmpty()) {
+                for (String id : getConfig().getConfigurationSection("SPONGES").getKeys(false)) {
+                    if (loadSponge(Integer.parseInt(id)).equals(block)) {
+                        getConfig().set("SPONGES." + id, null);
+                        return;
+                    }
                 }
             }
         }
