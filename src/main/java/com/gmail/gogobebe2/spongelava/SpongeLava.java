@@ -23,10 +23,12 @@ public class SpongeLava extends JavaPlugin implements Listener {
         int timerIncrementer = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                if (!spongeIDs.isEmpty()) {
-                    for (String id : spongeIDs) {
-                        clearSurroundingLava(loadSponge(Integer.parseInt(id)));
+                if (getConfig().isSet("SPONGES")) {
+                    Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
+                    if (!spongeIDs.isEmpty()) {
+                        for (String id : spongeIDs) {
+                            clearSurroundingLava(loadSponge(Integer.parseInt(id)));
+                        }
                     }
                 }
             }
