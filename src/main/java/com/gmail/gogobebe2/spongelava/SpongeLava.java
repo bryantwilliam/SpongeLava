@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,18 +20,6 @@ public class SpongeLava extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getLogger().info("Starting up SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
-        Bukkit.getPluginManager().registerEvents(this, this);
-        int timerIncrementer = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                if (getConfig().isSet("SPONGES")) {
-                    Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                    for (String id : spongeIDs) {
-                        clearSurroundingLava(loadSponge(Integer.parseInt(id)));
-                    }
-                }
-            }
-        }, 0L, 1L);
         saveDefaultConfig();
     }
 
@@ -62,6 +51,18 @@ public class SpongeLava extends JavaPlugin implements Listener {
                             block.breakNaturally();
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onLavaFlow(BlockFromToEvent event) {
+        if (event.getBlock().getType().equals(Material.LAVA) || event.getBlock().getType().equals(Material.STATIONARY_LAVA)) {
+            if (getConfig().isSet("SPONGES")) {
+                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
+                for (String id : spongeIDs) {
+                    clearSurroundingLava(loadSponge(Integer.parseInt(id)));
                 }
             }
         }
