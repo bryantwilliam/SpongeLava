@@ -48,6 +48,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
     }
 
     private boolean checkNear(Block block, Material[] materials, boolean breakOnFind) {
+        boolean broke = false;
         for (int x = block.getX() - 7; x < block.getX() + 7; x++) {
             for (int y = block.getY() - 7; y < block.getY() + 7; y++) {
                 for (int z = block.getZ() - 7; z < block.getZ() + 7; z++) {
@@ -56,14 +57,17 @@ public class SpongeLava extends JavaPlugin implements Listener {
                         if (near.getType().equals(material)) {
                             if (breakOnFind) {
                                 near.breakNaturally();
+                                broke = true;
                             }
-                            return true;
+                            else {
+                                return true;
+                            }
                         }
                     }
                 }
             }
         }
-        return false;
+        return broke;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
