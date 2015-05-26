@@ -19,6 +19,7 @@ import java.util.Set;
 public class SpongeLava extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(this, this);
         getLogger().info("Starting up SpongeLava. If you need me to update this plugin, email at gogobebe2@gmail.com");
         saveDefaultConfig();
     }
