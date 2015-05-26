@@ -26,7 +26,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
                 Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
                 if (!spongeIDs.isEmpty()) {
                     for (String id : spongeIDs) {
-                        clearSurroundingWater(loadSponge(Integer.parseInt(id)));
+                        clearSurroundingLava(loadSponge(Integer.parseInt(id)));
                     }
                 }
             }
@@ -51,7 +51,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         return false;
     }
 
-    private void clearSurroundingWater(Block sponge) {
+    private void clearSurroundingLava(Block sponge) {
         if (isTouchingLava(sponge)) {
             for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
                 for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
@@ -71,7 +71,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
         if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
             Block sponge = event.getBlockPlaced();
             saveSponge(sponge);
-            clearSurroundingWater(sponge);
+            clearSurroundingLava(sponge);
         }
     }
 
