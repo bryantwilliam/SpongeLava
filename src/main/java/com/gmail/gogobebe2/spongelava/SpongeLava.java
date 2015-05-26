@@ -79,8 +79,8 @@ public class SpongeLava extends JavaPlugin implements Listener {
 
     private int getNextID() {
         int greatest = 0;
-        Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-        if (!spongeIDs.isEmpty()) {
+        if (getConfig().isSet("SPONGES")) {
+            Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
             for (String id : spongeIDs) {
                 int ID = Integer.parseInt(id);
                 if (ID > greatest) {
@@ -116,8 +116,8 @@ public class SpongeLava extends JavaPlugin implements Listener {
     public void onSpongeBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (block.getType().equals(Material.SPONGE)) {
-            Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-            if (!spongeIDs.isEmpty()) {
+            if (getConfig().isSet("SPONGES")) {
+                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
                 for (String id : getConfig().getConfigurationSection("SPONGES").getKeys(false)) {
                     if (loadSponge(Integer.parseInt(id)).equals(block)) {
                         getConfig().set("SPONGES." + id, null);
