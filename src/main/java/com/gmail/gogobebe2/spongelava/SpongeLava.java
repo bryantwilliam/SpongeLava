@@ -43,27 +43,40 @@ public class SpongeLava extends JavaPlugin implements Listener {
 
     private void clearSurroundingLava(Block sponge) {
         if (!getConfig().getBoolean("Needs to touch lava to clear") || isTouchingLava(sponge)) {
-            for (int x = sponge.getX() - 7; x < sponge.getX() + 7; x++) {
-                for (int y = sponge.getY() - 7; y < sponge.getY() + 7; y++) {
-                    for (int z = sponge.getZ() - 7; z < sponge.getZ() + 7; z++) {
-                        Block block = sponge.getWorld().getBlockAt(x, y, z);
-                        if ((block.getType().equals(Material.LAVA)
-                                || block.getType().equals(Material.STATIONARY_LAVA))) {
-                            block.breakNaturally();
+            checkNear(sponge, new Material[]{Material.LAVA, Material.STATIONARY_LAVA}, true);
+        }
+    }
+
+    private boolean checkNear(Block block, Material[] materials, boolean breakOnFind) {
+        for (int x = block.getX() - 7; x < block.getX() + 7; x++) {
+            for (int y = block.getY() - 7; y < block.getY() + 7; y++) {
+                for (int z = block.getZ() - 7; z < block.getZ() + 7; z++) {
+                    Block near = block.getWorld().getBlockAt(x, y, z);
+                    for (Material material : materials) {
+                        if (near.getType().equals(material)) {
+                            if (breakOnFind) {
+                                near.breakNaturally();
+                            }
+                            return true;
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onLavaFlow(BlockFromToEvent event) {
-        if (event.getBlock().getType().equals(Material.LAVA) || event.getBlock().getType().equals(Material.STATIONARY_LAVA)) {
+        Block lava = event.getBlock();
+        if (lava.getType().equals(Material.LAVA) || lava.getType().equals(Material.STATIONARY_LAVA)) {
             if (getConfig().isSet("SPONGES")) {
                 Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
                 for (String id : spongeIDs) {
                     clearSurroundingLava(loadSponge(Integer.parseInt(id)));
+                    if (checkNear(lava, new Material[]{Material.SPONGE}, false)) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
@@ -75,7 +88,6 @@ public class SpongeLava extends JavaPlugin implements Listener {
             Block sponge = event.getBlockPlaced();
             saveSponge(sponge);
             clearSurroundingLava(sponge);
-            event.setCancelled(true);
         }
     }
 
