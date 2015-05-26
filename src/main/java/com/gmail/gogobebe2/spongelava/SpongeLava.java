@@ -75,6 +75,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
             Block sponge = event.getBlockPlaced();
             saveSponge(sponge);
             clearSurroundingLava(sponge);
+            event.setCancelled(true);
         }
     }
 
