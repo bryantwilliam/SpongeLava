@@ -1,20 +1,15 @@
 package com.gmail.gogobebe2.spongelava;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Set;
 
 public class SpongeLava extends JavaPlugin implements Listener {
     @Override
@@ -43,45 +38,36 @@ public class SpongeLava extends JavaPlugin implements Listener {
 
     private void clearSurroundingLava(Block sponge) {
         if (!getConfig().getBoolean("Needs to touch lava to clear") || isTouchingLava(sponge)) {
-            checkNear(sponge, new Material[]{Material.LAVA, Material.STATIONARY_LAVA}, true);
+            Block lava = getNearest(sponge, Material.LAVA);
+            while (lava != null) {
+                lava.setType(Material.AIR);
+                lava = getNearest(sponge, Material.LAVA);
+            }
         }
     }
 
-    private boolean checkNear(Block block, Material[] materials, boolean breakOnFind) {
-        boolean broke = false;
+    private Block getNearest(Block block, Material material) {
         for (int x = block.getX() - 3; x < block.getX() + 3; x++) {
             for (int y = block.getY() - 3; y < block.getY() + 3; y++) {
                 for (int z = block.getZ() - 3; z < block.getZ() + 3; z++) {
                     Block near = block.getWorld().getBlockAt(x, y, z);
-                    for (Material material : materials) {
-                        if (near.getType().equals(material)) {
-                            if (breakOnFind) {
-                                near.breakNaturally();
-                                broke = true;
-                            }
-                            else {
-                                return true;
-                            }
-                        }
+                    if (near.getType().equals(material)) {
+                        return near;
                     }
                 }
             }
         }
-        return broke;
+        return null;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onLavaFlow(BlockFromToEvent event) {
         Block lava = event.getBlock();
         if (lava.getType().equals(Material.LAVA) || lava.getType().equals(Material.STATIONARY_LAVA)) {
-            if (getConfig().isSet("SPONGES")) {
-                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                for (String id : spongeIDs) {
-                    clearSurroundingLava(loadSponge(Integer.parseInt(id)));
-                    if (checkNear(lava, new Material[]{Material.SPONGE}, false)) {
-                        event.setCancelled(true);
-                    }
-                }
+            Block sponge = getNearest(lava, Material.SPONGE);
+            if (sponge != null) {
+                clearSurroundingLava(sponge);
+                event.setCancelled(true);
             }
         }
     }
@@ -90,60 +76,7 @@ public class SpongeLava extends JavaPlugin implements Listener {
     public void onSpongePlace(BlockPlaceEvent event) {
         if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
             Block sponge = event.getBlockPlaced();
-            saveSponge(sponge);
             clearSurroundingLava(sponge);
-        }
-    }
-
-    private int getNextID() {
-        int greatest = 0;
-        if (getConfig().isSet("SPONGES")) {
-            Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-            for (String id : spongeIDs) {
-                int ID = Integer.parseInt(id);
-                if (ID > greatest) {
-                    greatest = ID;
-                }
-            }
-        }
-        return ++greatest;
-    }
-
-    private void saveSponge(Block sponge) {
-        World WORLD = sponge.getWorld();
-        int X = sponge.getX();
-        int Y = sponge.getY();
-        int Z = sponge.getZ();
-        int ID = getNextID();
-        getConfig().set("SPONGES." + ID + ".WORLD", WORLD.getName());
-        getConfig().set("SPONGES." + ID + ".X", X);
-        getConfig().set("SPONGES." + ID + ".Y", Y);
-        getConfig().set("SPONGES." + ID + ".Z", Z);
-        saveConfig();
-    }
-
-    private Block loadSponge(int ID) {
-        World WORLD = Bukkit.getWorld(getConfig().getString("SPONGES." + ID + ".WORLD"));
-        int X = getConfig().getInt("SPONGES." + ID + ".X");
-        int Y = getConfig().getInt("SPONGES." + ID + ".Y");
-        int Z = getConfig().getInt("SPONGES." + ID + ".Z");
-        return new Location(WORLD, X, Y, Z).getBlock();
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onSpongeBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (block.getType().equals(Material.SPONGE)) {
-            if (getConfig().isSet("SPONGES")) {
-                Set<String> spongeIDs = getConfig().getConfigurationSection("SPONGES").getKeys(false);
-                for (String id : spongeIDs) {
-                    if (loadSponge(Integer.parseInt(id)).equals(block)) {
-                        getConfig().set("SPONGES." + id, null);
-                        saveConfig();
-                        return;
-                    }
-                }
-            }
         }
     }
 }
