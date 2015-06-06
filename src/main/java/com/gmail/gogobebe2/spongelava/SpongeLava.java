@@ -73,10 +73,17 @@ public class SpongeLava extends JavaPlugin implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onSpongePlace(BlockPlaceEvent event) {
-        if (event.getItemInHand().getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Block blockPlaced = event.getBlockPlaced();
+        if (blockPlaced.getType().equals(Material.SPONGE) && event.getItemInHand().getDurability() != 1) {
             Block sponge = event.getBlockPlaced();
             clearSurroundingLava(sponge);
+        } else if (blockPlaced.getType() == Material.LAVA || blockPlaced.getType() == Material.STATIONARY_LAVA) {
+            Block sponge = getNearest(blockPlaced, Material.SPONGE);
+            if (sponge != null) {
+                clearSurroundingLava(sponge);
+                event.setCancelled(true);
+            }
         }
     }
 }
