@@ -69,8 +69,9 @@ public class SpongeLava extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
         Block blockPlaced = event.getBlockPlaced();
         if (blockPlaced.getType().equals(Material.SPONGE)) {
             Block sponge = event.getBlockPlaced();
